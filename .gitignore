@@ -1,0 +1,4 @@
+/target
+
+# Files to serve by the CDN
+/files/*

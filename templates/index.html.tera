@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/styles.css">
+    {# TODO: Make the name configurable in the config file #}
+    <title>Grasswave CDN</title>
+</head>
+<body>
+    <header>
+        <h1>Grasswave CDN</h1>
+    </header>
+
+    <main>
+        {% for item in data %}
+        <div>
+            <h2>{{item.name}}</h2>
+            <p>{{item.description}}</p>
+            <a href="./{{item.path}}">Download</a>
+        </div>
+        {% endfor %}
+    </main>
+</body>
+</html>
