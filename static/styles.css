@@ -1,7 +1,88 @@
-body {
-    font-family: sans-serif;
+/* Thanks, Maciejowski, for the stylesheet! You're awesome! */
+
+@import url('https://fonts.googleapis.com/css2?family=Finlandica:wght@400;500;600&display=swap');
+
+:root {
+    /* --gradient: linear-gradient(90deg, #3867d6 0%, #45aaf2 100%); */
+    --gradient: linear-gradient(90deg, #1d9f00 0%, #4DE928 100%);
+    --background: #222;
 }
 
-div {
-    border: 1px solid green;
+* {
+    box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	font-family: 'Finlandica', sans-serif;
+	letter-spacing: 1px;
+	word-spacing:   2px;
+	background-color: var(--background);
+	color: #ddd;
+}
+
+main {
+    max-width:     600px;
+    margin-left:   auto;
+    margin-right:  auto;
+    padding-block: 16px;
+    padding-left:  25px;
+    padding-right: 25px;
+}
+
+h1 {
+	text-align:     center;
+	font-weight:    600;
+	letter-spacing: 8px;
+	text-transform: capitalize;
+	background: var(--gradient);
+    background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+    margin-left:   auto;
+    margin-right:  auto;
+	max-width:     600px;
+    padding-left:  25px;
+    padding-right: 25px;
+	margin-block:  4rem;
+	font-size:     3rem;
+}
+
+.item h2 {
+    font-size: 1.5rem;
+}
+
+.item .description {
+    font-size: 1.25rem;
+}
+
+.tags-and-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.border-box {
+	background: var(--gradient);
+	padding: 4px;
+	border-radius: 8px;
+	display: flex;
+
+}
+
+.border-box a {
+    display: block;
+    padding: 8px 16px;
+    width:   100%;
+    height:  100%;
+    border-radius:   4px;
+    text-decoration: none;
+    background-color: var(--background);
+    color: #ddd;
+    transition-duration: 150ms;
+}
+
+.border-box a:hover {
+    background: var(--gradient);
+    color: white;
 }
