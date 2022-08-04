@@ -1,6 +1,7 @@
-use serde::Serialize;
 use toml;
+use serde::Serialize;
 use serde_derive::Deserialize;
+use cached::proc_macro::once;
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -8,13 +9,14 @@ use std::path::{Path, PathBuf};
 use rocket::fs::{FileServer, relative};
 use rocket_dyn_templates::{Template, context};
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 struct FileData {
     name: String,
     description: String,
     path: PathBuf,
 }
 
+#[once(time=43200)]  // Update the cache once every 12h
 fn get_data() -> Vec<FileData> {
     // TODO: Make the path configurable in the config file
     let files_dir = Path::new("files");
@@ -26,8 +28,6 @@ fn get_data() -> Vec<FileData> {
     let mut files_arr: Vec<FileData> = vec![];
 
     // Iterate through the directory
-    // TODO: Use tokio async runtime
-    // TODO: Use some sort of cache instead of reading the dir every time
     for entry in fs::read_dir(files_dir).expect("Cannot read the directory") {
         let entry = entry.expect("Cannot read the subdirectories");
 
@@ -70,7 +70,7 @@ fn get_data() -> Vec<FileData> {
         }
     }
 
-    // dbg!(files_arr);
+    // dbg!(&files_arr);
     files_arr
 }
 
