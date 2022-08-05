@@ -13,6 +13,7 @@ use rocket_dyn_templates::{Template, context};
 struct FileData {
     name: String,
     description: String,
+    tags: Vec<String>,
     path: PathBuf,
 }
 

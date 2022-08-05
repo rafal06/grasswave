@@ -20,7 +20,11 @@
             <p class="description">{{item.description}}</p>
 
             <div class="tags-and-buttons">
-                <div class="tags"></div>
+                <div class="tags">
+                    {% for tag in item.tags %}
+                     <p>#{{tag}}</p>
+                    {% endfor %}
+                </div>
                 <div class="border-box">
                     <a href="./{{item.path}}">Download</a>
                 </div>

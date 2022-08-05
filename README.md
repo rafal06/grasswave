@@ -21,6 +21,7 @@ In the toml files, set the name and description to display, and the name of the 
 ```toml
 name = "Lorem"
 description = "Lorem ipsum dolor sit amet"
+tags = ["lorem", "ipsum", "dolor"]
 path = "lorem.tar.xz"
 ```
 Run the executable, and that's it! You can visit it in the browser at `http://127.0.0.1:8000`
