@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/styles.css">
+    <script src="/static/search.js" defer></script>
     {# TODO: Make the name configurable in the config file #}
     <title>Grasswave CDN</title>
 </head>
@@ -13,9 +14,15 @@
         <h1>Grasswave CDN</h1>
     </header>
 
+    <div class="searchbar-box">
+        <div class="border-box">
+            <input type="search" id="searchbar" placeholder="Search for files...">
+        </div>
+    </div>
+
     <main>
         {% for item in data %}
-        <div class="item">
+        <div class="item" data-tags="{{item.tags}}">
             <h2>{{item.name}}</h2>
             <p class="description">{{item.description}}</p>
 
