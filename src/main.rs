@@ -83,6 +83,8 @@ fn index() -> Template {
 
 #[launch]
 fn rocket() -> _ {
+    println!("The server has started! Visit it at http://127.0.0.1:8000");
+
     rocket::build()
         .mount("/files", FileServer::from(relative!["/files"]))
         .mount("/static", FileServer::from(relative!["/static"]))
