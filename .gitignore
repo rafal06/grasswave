@@ -2,3 +2,6 @@
 
 # Files to serve by the CDN
 /files/*
+
+# Config file
+/config.toml
