@@ -120,12 +120,16 @@ fn gen_default_config(save_to_file: bool) -> Config {
 #[get("/")]
 fn index() -> Template {
     let data = get_data();
-    Template::render("index", context! {data: &data})
+    let config = get_config();
+    Template::render("index", context! {
+        data:   &data,
+        config: &config,
+    })
 }
 
 #[launch]
 fn rocket() -> _ {
-    // dbg!(get_config());
+    get_config();
     println!("The server has started! Visit it at http://127.0.0.1:8000");
 
     rocket::build()
