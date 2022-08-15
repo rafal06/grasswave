@@ -20,15 +20,12 @@ struct FileData {
 #[derive(Serialize, Deserialize, Clone, Debug)]
 struct Config {
     displayed_name: String,
+    files_path: PathBuf,
 }
 
 #[once(time=43200)]  // Update the cache once every 12h
 fn get_data() -> Vec<FileData> {
-    // TODO: Make the path configurable in the config file
-    let files_dir = Path::new("files");
-    if !files_dir.is_dir() {
-        panic!("The provided path is not a directory!");
-    }
+    let files_dir = get_config().files_path;
 
     // Vector that stores info from the toml files
     let mut files_arr: Vec<FileData> = vec![];
@@ -67,8 +64,11 @@ fn get_data() -> Vec<FileData> {
 
                 // Add full path to the file's name
                 let item_path = item.path;
-                item.path = entry.path().to_path_buf();
+                let entry_path = entry.file_name();
+                item.path = PathBuf::from("files/");
+                item.path.push(entry_path);
                 item.path.push(item_path);
+                dbg!(&item.path);
 
                 // Push the CdnItem to the Vector
                 files_arr.push(item);
@@ -106,6 +106,7 @@ fn gen_default_config(save_to_file: bool) -> Config {
     // Default config values
     let default_config = Config {
         displayed_name: "Grasswave CDN".to_string(),
+        files_path: PathBuf::from("files"),
     };
 
     if save_to_file {
@@ -129,11 +130,18 @@ fn index() -> Template {
 
 #[launch]
 fn rocket() -> _ {
-    get_config();
+    let config = get_config();
+
+    // Check if the files dir exists
+    if !config.files_path.is_dir() {
+        eprintln!("The provided path {:?} does not exist, or is unreadable", config.files_path);
+        std::process::exit(1);
+    }
+
     println!("The server has started! Visit it at http://127.0.0.1:8000");
 
     rocket::build()
-        .mount("/files", FileServer::from(relative!["/files"]))
+        .mount("/files", FileServer::from(&config.files_path))
         .mount("/static", FileServer::from(relative!["/static"]))
         .mount("/", routes![index])
         .attach(Template::fairing())
