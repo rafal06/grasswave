@@ -21,6 +21,7 @@ struct FileData {
 struct Config {
     displayed_name: String,
     files_path: PathBuf,
+    accent_colors: [String; 2],
 }
 
 #[once(time=43200)]  // Update the cache once every 12h
@@ -107,6 +108,7 @@ fn gen_default_config(save_to_file: bool) -> Config {
     let default_config = Config {
         displayed_name: "Grasswave CDN".to_string(),
         files_path: PathBuf::from("files"),
+        accent_colors: [String::from("#1D9F00"), String::from("#4DE928")],
     };
 
     if save_to_file {

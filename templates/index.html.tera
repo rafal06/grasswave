@@ -7,6 +7,11 @@
     <link rel="stylesheet" href="/static/styles.css">
     <script src="/static/search.js" defer></script>
     <title>{{config.displayed_name}}</title>
+    <style>
+        :root {
+            --gradient: linear-gradient(90deg, {{config.accent_colors[0]}} 0%, {{config.accent_colors[1]}} 100%);
+        }
+    </style>
 </head>
 <body>
     <header>
