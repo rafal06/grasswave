@@ -8,6 +8,8 @@ use std::path::{Path, PathBuf};
 #[macro_use] extern crate rocket;
 use rocket::fs::{FileServer, relative};
 use rocket_dyn_templates::{Template, context};
+use rocket::Request;
+use rocket::http::Status;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 struct FileData {
@@ -132,6 +134,19 @@ fn index() -> Template {
     })
 }
 
+#[catch(404)]
+fn not_found(status: Status, _req: &Request) -> Template {
+    let config = get_config();
+    let code = status.code;
+
+    Template::render("error", context! {
+        code:    code,
+        title:   format!("{}: Not Found", code),
+        message: "The requested page does not exist",
+        config: &config,
+    })
+}
+
 #[launch]
 fn rocket() -> _ {
     let config = get_config();
@@ -151,5 +166,6 @@ fn rocket() -> _ {
         .mount("/files", FileServer::from(&config.files_path))
         .mount("/static", FileServer::from(relative!["/static"]))
         .mount("/", routes![index])
+        .register("/", catchers![not_found])
         .attach(Template::fairing())
 }
