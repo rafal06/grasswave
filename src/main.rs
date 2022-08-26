@@ -22,6 +22,7 @@ struct Config {
     displayed_name: String,
     files_path: PathBuf,
     accent_colors: [String; 2],
+    http_port: u16,
 }
 
 #[once(time=43200)]  // Update the cache once every 12h
@@ -109,6 +110,7 @@ fn gen_default_config(save_to_file: bool) -> Config {
         displayed_name: "Grasswave CDN".to_string(),
         files_path: PathBuf::from("files"),
         accent_colors: [String::from("#1D9F00"), String::from("#4DE928")],
+        http_port: 7000,
     };
 
     if save_to_file {
@@ -140,9 +142,12 @@ fn rocket() -> _ {
         std::process::exit(1);
     }
 
-    println!("The server has started! Visit it at http://127.0.0.1:8000");
+    let figment = rocket::Config::figment()
+        .merge(("port", config.http_port));
 
-    rocket::build()
+    println!("The server has started! Visit it at http://127.0.0.1:{}", config.http_port);
+
+    rocket::custom(figment)
         .mount("/files", FileServer::from(&config.files_path))
         .mount("/static", FileServer::from(relative!["/static"]))
         .mount("/", routes![index])

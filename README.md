@@ -37,4 +37,4 @@ description = "Lorem ipsum dolor sit amet"
 tags = ["lorem", "ipsum", "dolor"]
 path = "lorem.tar.xz"
 ```
-Run the executable, and that's it! You can visit it in the browser at `http://127.0.0.1:8000`
+Run the executable, and that's it! You can visit it in the browser at the link displayed in the terminal.
