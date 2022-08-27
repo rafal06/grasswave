@@ -1,0 +1,6 @@
+<style>
+    :root {
+        --gradient: linear-gradient(90deg, {{config.accent_colors[0]}} 0%, {{config.accent_colors[1]}} 100%);
+        --background: #222;
+    }
+</style>
