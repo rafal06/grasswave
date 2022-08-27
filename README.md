@@ -38,3 +38,16 @@ tags = ["lorem", "ipsum", "dolor"]
 path = "lorem.tar.xz"
 ```
 Run the executable, and that's it! You can visit it in the browser at the link displayed in the terminal.
+
+You can configure it in a config file created automatically on the first run.
+
+<details>
+<summary>Default config</summary>
+
+```toml
+displayed_name = "Grasswave CDN"
+files_path = "files"
+accent_colors = ["#1D9F00", "#4DE928"]
+http_port = 7000
+```
+</details>
