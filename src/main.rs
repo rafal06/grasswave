@@ -1,9 +1,11 @@
-use toml;
+mod config;
+use config::get_config;
+
 use serde::Serialize;
 use serde_derive::Deserialize;
 use cached::proc_macro::once;
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 #[macro_use] extern crate rocket;
 use rocket::fs::{FileServer, relative};
@@ -17,14 +19,6 @@ struct FileData {
     description: String,
     tags: Vec<String>,
     path: PathBuf,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug)]
-struct Config {
-    displayed_name: String,
-    files_path: PathBuf,
-    accent_colors: [String; 2],
-    http_port: u16,
 }
 
 #[once(time=43200)]  // Update the cache once every 12h
@@ -82,46 +76,6 @@ fn get_data() -> Vec<FileData> {
 
     // dbg!(&files_arr);
     files_arr
-}
-
-#[once]
-fn get_config() -> Config {
-    let config_file = Path::new("config.toml");
-
-    if config_file.is_file() {
-        // Read, parse and return it
-        let config_file_contents = fs::read_to_string(config_file).unwrap();
-        match toml::from_str(&config_file_contents) {
-            Ok(val) => val,
-            Err(_) => {
-                //  Use default values instead (but don't save them)
-                eprintln!("Error: config file is not properly formatted");
-                gen_default_config(false)
-            },
-        }
-    } else {
-        // Save and return a default config
-        println!("No config file found. Creating a new one...");
-        gen_default_config(true)
-    }
-}
-
-fn gen_default_config(save_to_file: bool) -> Config {
-    // Default config values
-    let default_config = Config {
-        displayed_name: "Grasswave CDN".to_string(),
-        files_path: PathBuf::from("files"),
-        accent_colors: [String::from("#1D9F00"), String::from("#4DE928")],
-        http_port: 7000,
-    };
-
-    if save_to_file {
-        // Serialize and save the file
-        let default_config_toml = toml::to_string(&default_config).unwrap();
-        fs::write("config.toml", default_config_toml).unwrap();
-    }
-
-    default_config
 }
 
 #[get("/")]
