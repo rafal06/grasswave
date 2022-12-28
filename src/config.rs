@@ -12,6 +12,26 @@ pub struct Config {
     pub http_port: u16,
 }
 
+impl Config {
+    fn default(save_to_file: bool) -> Config {
+        // Default config values
+        let default_config = Config {
+            displayed_name: "Grasswave CDN".to_string(),
+            files_path: PathBuf::from("files"),
+            accent_colors: [String::from("#1D9F00"), String::from("#4DE928")],
+            http_port: 7000,
+        };
+
+        if save_to_file {
+            // Serialize and save the file
+            let default_config_toml = toml::to_string(&default_config).unwrap();
+            fs::write("config.toml", default_config_toml).unwrap();
+        }
+
+        default_config
+    }
+}
+
 #[once]
 pub fn get_config() -> Config {
     let config_file = Path::new("config.toml");
@@ -24,30 +44,12 @@ pub fn get_config() -> Config {
             Err(_) => {
                 //  Use default values instead (but don't save them)
                 eprintln!("Error: config file is not properly formatted");
-                gen_default_config(false)
+                Config::default(false)
             },
         }
     } else {
         // Save and return a default config
         println!("No config file found. Creating a new one...");
-        gen_default_config(true)
+        Config::default(true)
     }
-}
-
-fn gen_default_config(save_to_file: bool) -> Config {
-    // Default config values
-    let default_config = Config {
-        displayed_name: "Grasswave CDN".to_string(),
-        files_path: PathBuf::from("files"),
-        accent_colors: [String::from("#1D9F00"), String::from("#4DE928")],
-        http_port: 7000,
-    };
-
-    if save_to_file {
-        // Serialize and save the file
-        let default_config_toml = toml::to_string(&default_config).unwrap();
-        fs::write("config.toml", default_config_toml).unwrap();
-    }
-
-    default_config
 }
