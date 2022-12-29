@@ -1,5 +1,5 @@
-use std::fs;
-use std::path::{Path, PathBuf};
+use std::{env, fs};
+use std::path::PathBuf;
 use serde::Serialize;
 use serde_derive::Deserialize;
 use cached::proc_macro::once;
@@ -29,7 +29,14 @@ impl Config {
 
 #[once]
 pub fn get_config() -> Config {
-    let config_file = Path::new("config.toml");
+    let mut pargs = pico_args::Arguments::from_env();
+    let config_arg: Result<PathBuf, pico_args::Error> = pargs.value_from_str("--config");
+
+    let config_file = if let Ok(path) = config_arg {
+        path
+    } else {
+        PathBuf::from("config.toml")
+    };
 
     if config_file.is_file() {
         // Read, parse and return it
