@@ -15,9 +15,15 @@ pub struct Config {
 impl Config {
     /// Get default config values
     fn default() -> Config {
+        let files_path = if env::var("DOCKER") == Ok("1".to_string()) {
+            PathBuf::from("/data/files")
+        } else {
+            PathBuf::from("files")
+        };
+        
         Config {
             displayed_name: "Grasswave CDN".to_string(),
-            files_path: PathBuf::from("files"),
+            files_path,
             accent_colors: [
                 String::from("#1D9F00"),
                 String::from("#4DE928")
@@ -34,6 +40,8 @@ pub fn get_config() -> Config {
 
     let config_file = if let Ok(path) = config_arg {
         path
+    } else if env::var("DOCKER") == Ok("1".to_string()) {
+        PathBuf::from("/data/config.toml")
     } else {
         PathBuf::from("config.toml")
     };
