@@ -53,7 +53,13 @@ fn rocket() -> _ {
     // Check if the files dir exists
     if !config.files_path.is_dir() {
         eprintln!("The provided path {:?} does not exist, or is unreadable", config.files_path);
-        std::process::exit(1);
+        
+        if env::var("DOCKER") == Ok("1".to_string()) {
+            println!("Creating directory at {:?}", config.files_path);
+            fs::create_dir(&config.files_path).expect("Couldn't create files directory");
+        } else {
+            process::exit(1);
+        }
     }
 
     let figment = rocket::Config::figment()
