@@ -1,5 +1,5 @@
-use std::fs;
-use std::path::{Path, PathBuf};
+use std::{env, fs};
+use std::path::PathBuf;
 use serde::Serialize;
 use serde_derive::Deserialize;
 use cached::proc_macro::once;
@@ -15,9 +15,15 @@ pub struct Config {
 impl Config {
     /// Get default config values
     fn default() -> Config {
+        let files_path = if env::var("DOCKER") == Ok("1".to_string()) {
+            PathBuf::from("/data/files")
+        } else {
+            PathBuf::from("files")
+        };
+        
         Config {
             displayed_name: "Grasswave CDN".to_string(),
-            files_path: PathBuf::from("files"),
+            files_path,
             accent_colors: [
                 String::from("#1D9F00"),
                 String::from("#4DE928")
@@ -29,7 +35,16 @@ impl Config {
 
 #[once]
 pub fn get_config() -> Config {
-    let config_file = Path::new("config.toml");
+    let mut pargs = pico_args::Arguments::from_env();
+    let config_arg: Result<PathBuf, pico_args::Error> = pargs.value_from_str("--config");
+
+    let config_file = if let Ok(path) = config_arg {
+        path
+    } else if env::var("DOCKER") == Ok("1".to_string()) {
+        PathBuf::from("/data/config.toml")
+    } else {
+        PathBuf::from("config.toml")
+    };
 
     if config_file.is_file() {
         // Read, parse and return it

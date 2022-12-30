@@ -1,0 +1,19 @@
+# Local build artifacts
+target
+
+# Unnecessary files
+screenshots
+README.md
+LICENSE.txt
+
+# Docker
+Dockerfile
+.dockerignore
+.gitignore
+
+# IDE files
+.idea
+.vscode
+
+# Files served by the local dev build
+files

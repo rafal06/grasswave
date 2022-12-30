@@ -1,6 +1,7 @@
 mod config;
 mod data;
 
+use std::{env, fs, process};
 use crate::config::get_config;
 use crate::data::get_data;
 
@@ -35,12 +36,30 @@ fn not_found(status: Status, _req: &Request) -> Template {
 
 #[launch]
 fn rocket() -> _ {
+    // Print help
+    if pico_args::Arguments::from_env().contains(["-h", "--help"]) { 
+        println!( concat!(
+        "USAGE:\n",
+        "  grasswave [options]\n\n",
+        "OPTIONS:\n",
+        "  -h, --help      Show help and exit\n",
+        "  --config PATH   Set the configuration file path",
+        ));
+        process::exit(0);
+    }
+    
     let config = get_config();
 
     // Check if the files dir exists
     if !config.files_path.is_dir() {
         eprintln!("The provided path {:?} does not exist, or is unreadable", config.files_path);
-        std::process::exit(1);
+        
+        if env::var("DOCKER") == Ok("1".to_string()) {
+            println!("Creating directory at {:?}", config.files_path);
+            fs::create_dir(&config.files_path).expect("Couldn't create files directory");
+        } else {
+            process::exit(1);
+        }
     }
 
     let figment = rocket::Config::figment()
